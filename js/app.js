@@ -10,6 +10,17 @@ let shuffleQusetions,currentQuestionIndex,score
 
 startButton.addEventListener('click', startGame)
 nextButton.addEventListener('click', () => {
+    if (nextButton) {
+        alert('Select answer')
+        function stopNextButton () {
+            if (nextButton === '') {
+                return
+            } else {
+                
+            }
+        }
+        return stopNextButton()
+    }
     currentQuestionIndex++
     setNextQuestion()
 })
@@ -43,6 +54,7 @@ function showQuestion (question) {
 function setNextQuestion () {
     resetState()
     showQuestion(shuffleQusetions[currentQuestionIndex])
+    
 }
 function resetState () {
     nextButton.classList.add('hide')

@@ -17,6 +17,7 @@ nextButton.addEventListener('click', () => {
 function startGame () {
 console.log('Started')
 startButton.classList.add('hide')
+nextButton.style.display = 'block'
 nextButton.classList.remove('hide')
 shuffleQusetions = questions.sort(() => Math.random() -0.5)
 currentQuestionIndex = 0
@@ -63,6 +64,7 @@ function selectAnswer (e) {
         // scoreElement.innerText = `Score ${score}`
     } else {
         selectButton.style.backgroundColor = 'red'
+
     }
     if (shuffleQusetions.length > currentQuestionIndex +1) {
         nextButton.classList.remove('hide')

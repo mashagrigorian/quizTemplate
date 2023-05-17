@@ -4,11 +4,6 @@
   box-sizing: border-box;
   font-family: Georgia, 'Times New Roman', Times, serif;
 }
-:root {
-  --hue-neutral: 200;
-  --hue-wrong: 0;
-  --hue-correct: 145;
-}
 body {
   padding: 0;
   margin: 0;
@@ -42,12 +37,6 @@ body {
     font-size: 25px;
   }
 }
-body.correct {
-  background-color: #A8D8CD;
-}
-body.correct .btn {
-  color: #ffffff;
-}
 .btn {
   cursor: pointer;
   font-size: 30px;
@@ -56,9 +45,6 @@ body.correct .btn {
   .btn {
     font-size: 18px;
   }
-}
-body.wrong {
-  background-color: #FFB975;
 }
 .container {
   width: 800px;

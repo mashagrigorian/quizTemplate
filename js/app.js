@@ -63,7 +63,6 @@ function selectAnswer (e) {
         // scoreElement.innerText = `Score ${score}`
     } else {
         selectButton.style.backgroundColor = 'red'
-
     }
     if (shuffleQusetions.length > currentQuestionIndex +1) {
         nextButton.classList.remove('hide')

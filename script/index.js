@@ -97,7 +97,6 @@ function showScore () {
   nextButton.classList.add("hide");
   questionContainerElements.classList.add("hide");
   scoreElement.innerText = `You scored ${score} out of ${questions.length}`
-  nextButton.classList.add("hide");
   nextButton.disabled = true; // Disable the Next button
 }
 

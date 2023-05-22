@@ -7,8 +7,7 @@ const scoreElement = document.getElementById("score");
 const messageElement = document.getElementById("message");
 const trueSound = document.getElementById('trueSound')
 const falseSound = document.getElementById('falseSound')
-
-
+const audioElements = document.querySelectorAll('audio')
 
 
 let shuffleQuestions, currentQuestionIndex, score
@@ -59,10 +58,13 @@ function showQuestion (question) {
 }
 
 function setNextQuestion () {
+ 
   resetState();
   answerSelected = false;
   messageElement.innerText = "";
   showQuestion(shuffleQuestions[currentQuestionIndex])
+  let currentTime = 0 
+
 }
 
 function resetState () {
@@ -73,6 +75,7 @@ function resetState () {
 }
 
 function selectAnswer (e) {
+  
   if (answerSelected) {
     return; // Exit the function if an answer has already been selected
   }
@@ -86,18 +89,28 @@ function selectAnswer (e) {
     button.disabled = true; // Disable all answer buttons
     setStatusClass(button, button.dataset.correct);
   })
-
+  
+  if (!audioElements.paused) {
+    audioElements.forEach(audio => {
+        audio.pause();
+        audio.currentTime = 0;
+    });
+}
   if (correct) {
     score++;
     selectButton.style.backgroundColor = "green";
     trueSound.play()
-
-  } else {
+  } 
+  else {
     selectButton.style.backgroundColor = "red";
     falseSound.play()
   }
+
+
     nextButton.classList.remove("hide");
 }
+
+
 
 function showScore () {
   startButton.innerText = "Restart";

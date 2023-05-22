@@ -5,6 +5,11 @@ const questionElement = document.getElementById("question");
 const answersButtonElement = document.getElementById("answer-buttons");
 const scoreElement = document.getElementById("score");
 const messageElement = document.getElementById("message");
+const trueSound = document.getElementById('trueSound')
+const falseSound = document.getElementById('falseSound')
+
+
+
 
 let shuffleQuestions, currentQuestionIndex, score
 let answerSelected = false; // Track if an answer has been selected
@@ -85,8 +90,11 @@ function selectAnswer (e) {
   if (correct) {
     score++;
     selectButton.style.backgroundColor = "green";
+    trueSound.play()
+
   } else {
     selectButton.style.backgroundColor = "red";
+    falseSound.play()
   }
     nextButton.classList.remove("hide");
 }

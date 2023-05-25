@@ -72,6 +72,7 @@ function selectAnswer (e) {
     return; // Exit the function if an answer has already been selected
   }
 
+
   answerSelected = true; // Set the answer selection tracker to true
   const selectButton = e.target;
   const correct = selectButton.dataset.correct;
@@ -81,6 +82,8 @@ function selectAnswer (e) {
     button.disabled = true; // Disable all answer buttons
     setStatusClass(button, button.dataset.correct);
   })
+  userResponses[currentQuestionIndex] = Array.from(answersButtonElement.children).indexOf(selectButton);
+
 
   if (correct) {
     score++;
@@ -89,15 +92,6 @@ function selectAnswer (e) {
     selectButton.style.backgroundColor = "red";
   }
     nextButton.classList.remove("hide");
-}
-
-function showScore () {
-  startButton.innerText = "Restart";
-  startButton.classList.remove("hide");
-  nextButton.classList.add("hide");
-  questionContainerElements.classList.add("hide");
-  scoreElement.innerText = `You scored ${score} out of ${questions.length}`
-  nextButton.disabled = true; // Disable the Next button
 }
 
 function hideScore() {
@@ -122,6 +116,83 @@ function clearStatusClass (element) {
   element.classList.remove("correct");
   element.classList.remove("wrong");
 }
+
+const userResponses = [];
+
+function displayAllQuestions() {
+  const resultsContainer = document.getElementById("results-container");
+  resultsContainer.innerHTML = "";
+
+  const heading = document.createElement("h2");
+  heading.innerText = "Quiz Results:";
+  resultsContainer.appendChild(heading);
+ 
+  for (let i = 0; i < questions.length; i++) {
+    const question = questions[i];
+    const userAnswerIndex = userResponses[i];
+    const correctAnswerIndex = question.answers.findIndex(answer => answer.correct);
+
+    const questionResult = document.createElement("div");
+    questionResult.classList.add("question-result");
+
+    const questionText = document.createElement("p");
+    questionText.innerText = question.question;
+    questionResult.appendChild(questionText);
+
+    const userAnswer = document.createElement("p");
+    if (userAnswerIndex !== undefined && question.answers[userAnswerIndex]) {
+      userAnswer.innerText = "Your Answer: " + question.answers[userAnswerIndex].text;
+    } else {
+      userAnswer.innerText = "Your Answer: N/A";
+    }
+    questionResult.appendChild(userAnswer);
+
+    const correctAnswer = document.createElement("p");
+    if (correctAnswerIndex !== -1) {
+      correctAnswer.innerText = "Correct Answer: " + question.answers[correctAnswerIndex].text;
+    } else {
+      correctAnswer.innerText = "Correct Answer: N/A";
+    }
+    questionResult.appendChild(correctAnswer);
+
+    resultsContainer.appendChild(questionResult);
+  }
+
+  for (let i = 0; i < questions.length; i++) {
+    const question = questions[i];
+    const userAnswerIndex = userResponses[i]; // Retrieve the selected answer index from 'userResponses'
+
+    // Existing code
+    const finalScore = document.createElement("p");
+    finalScore.innerText = "Final Score: " + score + " out of " + questions.length;
+    resultsContainer.appendChild(finalScore);
+
+    const userAnswer = document.createElement("p");
+    if (userAnswerIndex !== undefined && question.answers[userAnswerIndex]) {
+      userAnswer.innerText = "Your Answer: " + question.answers[userAnswerIndex].text;
+    } else {
+      userAnswer.innerText = "Your Answer: N/A";
+    }
+    questionResult.appendChild(userAnswer);
+
+    // Existing code
+
+    resultsContainer.appendChild(questionResult);
+  }
+
+  
+}
+
+function showScore () {
+  startButton.innerText = "Restart";
+  startButton.classList.remove("hide");
+  nextButton.classList.add("hide");
+  questionContainerElements.classList.add("hide");
+  scoreElement.innerText = `You scored ${score} out of ${questions.length}`
+  nextButton.disabled = true; // Disable the Next button
+  displayAllQuestions();
+}
+
 
 const questions = [
     {

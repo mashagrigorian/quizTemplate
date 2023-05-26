@@ -5,6 +5,8 @@ const questionElement = document.getElementById("question");
 const answersButtonElement = document.getElementById("answer-buttons");
 const scoreElement = document.getElementById("score");
 const messageElement = document.getElementById("message");
+const restartButton = document.getElementById("restart-btn");
+const resultsContainer = document.getElementById("results-container");
 
 let shuffleQuestions, currentQuestionIndex, score
 let answerSelected = false; // Track if an answer has been selected
@@ -25,6 +27,21 @@ nextButton.addEventListener("click", () => {
       nextButton.style.display = "none";
     }
 })
+
+function restartGame() {
+  // Reset all variables and elements to their initial state
+  currentQuestionIndex = 0;
+  score = 0;
+
+  // Clear the result section
+  resultsContainer.innerHTML = "";
+
+  // Reset the UI and start the game again
+  resetState();
+  hideScore();
+  setNextQuestion();
+}
+
 
 function startGame () {
 startButton.classList.add("hide");
@@ -119,6 +136,7 @@ function clearStatusClass (element) {
 
 const userResponses = [];
 
+
 function displayAllQuestions() {
   const resultsContainer = document.getElementById("results-container");
   resultsContainer.innerHTML = "";
@@ -126,7 +144,7 @@ function displayAllQuestions() {
   const heading = document.createElement("h2");
   heading.innerText = "Quiz Results:";
   resultsContainer.appendChild(heading);
- 
+
   for (let i = 0; i < questions.length; i++) {
     const question = questions[i];
     const userAnswerIndex = userResponses[i];
@@ -158,39 +176,22 @@ function displayAllQuestions() {
     resultsContainer.appendChild(questionResult);
   }
 
-  for (let i = 0; i < questions.length; i++) {
-    const question = questions[i];
-    const userAnswerIndex = userResponses[i]; // Retrieve the selected answer index from 'userResponses'
+  const restartButton = document.createElement("button");
+  restartButton.innerText = "Restart";
+  restartButton.classList.add("btn");
+  restartButton.addEventListener("click", restartGame);
+  resultsContainer.appendChild(restartButton);
 
-    // Existing code
-    const finalScore = document.createElement("p");
-    finalScore.innerText = "Final Score: " + score + " out of " + questions.length;
-    resultsContainer.appendChild(finalScore);
-
-    const userAnswer = document.createElement("p");
-    if (userAnswerIndex !== undefined && question.answers[userAnswerIndex]) {
-      userAnswer.innerText = "Your Answer: " + question.answers[userAnswerIndex].text;
-    } else {
-      userAnswer.innerText = "Your Answer: N/A";
-    }
-    questionResult.appendChild(userAnswer);
-
-    // Existing code
-
-    resultsContainer.appendChild(questionResult);
-  }
-
-  
+  // Show the restart button after displaying the quiz results
+  restartButton.classList.remove("hide");
 }
 
+
 function showScore () {
-  startButton.innerText = "Restart";
-  startButton.classList.remove("hide");
-  nextButton.classList.add("hide");
   questionContainerElements.classList.add("hide");
   scoreElement.innerText = `You scored ${score} out of ${questions.length}`
   nextButton.disabled = true; // Disable the Next button
-  displayAllQuestions();
+  displayAllQuestions();   
 }
 
 

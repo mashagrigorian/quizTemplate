@@ -13,7 +13,7 @@ let answerSelected = false; // Track if an answer has been selected
 let isQuizFinished = false;
 
 startButton.addEventListener("click", startGame);
-nextButton.addEventListener("click", () => {
+nextButton.addEventListener("click", function() {
   if(!answerSelected) {
     showMessage("Please select an answer."); // Display message if no answer is selected
     return; // Exit the function if an answer has not been selected
@@ -33,12 +33,15 @@ function restartGame() {
   currentQuestionIndex = 0;
   score = 0;
 
-  // Clear the result section
-  resultsContainer.innerHTML = "";
+  resultsContainer.innerHTML = ""; // Clear the result section
 
   // Reset the UI and start the game again
   resetState();
   hideScore();
+  startButton.classList.remove("hide");
+  nextButton.classList.remove("hide");
+  nextButton.disabled = false;
+  isQuizFinished = false;
   setNextQuestion();
 }
 
@@ -56,9 +59,9 @@ setNextQuestion();
 hideScore();
 }
 
-function showQuestion (question) {
-  questionElement.innerText = question.question;
-  question.answers.forEach(answer => {
+function showQuestion (questions) {
+  questionElement.innerText = questions.question;
+  questions.answers.forEach(answer => {
     const button = document.createElement("button");
     button.innerText = answer.text;
     button.classList.add("btn");
@@ -89,7 +92,6 @@ function selectAnswer (e) {
     return; // Exit the function if an answer has already been selected
   }
 
-
   answerSelected = true; // Set the answer selection tracker to true
   const selectButton = e.target;
   const correct = selectButton.dataset.correct;
@@ -100,7 +102,6 @@ function selectAnswer (e) {
     setStatusClass(button, button.dataset.correct);
   })
   userResponses[currentQuestionIndex] = Array.from(answersButtonElement.children).indexOf(selectButton);
-
 
   if (correct) {
     score++;
@@ -135,7 +136,6 @@ function clearStatusClass (element) {
 }
 
 const userResponses = [];
-
 
 function displayAllQuestions() {
   const resultsContainer = document.getElementById("results-container");

@@ -5,8 +5,15 @@ const questionElement = document.getElementById("question");
 const answersButtonElement = document.getElementById("answer-buttons");
 const scoreElement = document.getElementById("score");
 const messageElement = document.getElementById("message");
+
 const restartButton = document.getElementById("restart-btn");
 const resultsContainer = document.getElementById("results-container");
+
+const trueSound = document.getElementById('trueSound')
+const falseSound = document.getElementById('falseSound')
+const audioElements = document.querySelectorAll('audio')
+
+
 
 let shuffleQuestions, currentQuestionIndex, score
 let answerSelected = false; // Track if an answer has been selected
@@ -74,10 +81,13 @@ function showQuestion (questions) {
 }
 
 function setNextQuestion () {
+ 
   resetState();
   answerSelected = false;
   messageElement.innerText = "";
   showQuestion(shuffleQuestions[currentQuestionIndex])
+  let currentTime = 0 
+
 }
 
 function resetState () {
@@ -88,6 +98,7 @@ function resetState () {
 }
 
 function selectAnswer (e) {
+  
   if (answerSelected) {
     return; // Exit the function if an answer has already been selected
   }
@@ -101,15 +112,43 @@ function selectAnswer (e) {
     button.disabled = true; // Disable all answer buttons
     setStatusClass(button, button.dataset.correct);
   })
+
   userResponses[currentQuestionIndex] = Array.from(answersButtonElement.children).indexOf(selectButton);
+
+
+  
+  if (!audioElements.paused) {
+    audioElements.forEach(audio => {
+        audio.pause();
+        audio.currentTime = 0;
+    });
+}
 
   if (correct) {
     score++;
     selectButton.style.backgroundColor = "green";
-  } else {
+    trueSound.play()
+  } 
+  else {
     selectButton.style.backgroundColor = "red";
+    falseSound.play()
   }
+
+
     nextButton.classList.remove("hide");
+}
+
+
+
+
+
+function showScore () {
+  startButton.innerText = "Restart";
+  startButton.classList.remove("hide");
+  nextButton.classList.add("hide");
+  questionContainerElements.classList.add("hide");
+  scoreElement.innerText = `You scored ${score} out of ${questions.length}`
+  nextButton.disabled = true; // Disable the Next button
 }
 
 function hideScore() {

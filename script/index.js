@@ -5,17 +5,15 @@ const questionElement = document.getElementById("question");
 const answersButtonElement = document.getElementById("answer-buttons");
 const scoreElement = document.getElementById("score");
 const messageElement = document.getElementById("message");
-const trueSound = document.getElementById('trueSound')
-const falseSound = document.getElementById('falseSound')
-const audioElements = document.querySelectorAll('audio')
-
+const restartButton = document.getElementById("restart-btn");
+const resultsContainer = document.getElementById("results-container");
 
 let shuffleQuestions, currentQuestionIndex, score
 let answerSelected = false; // Track if an answer has been selected
 let isQuizFinished = false;
 
 startButton.addEventListener("click", startGame);
-nextButton.addEventListener("click", () => {
+nextButton.addEventListener("click", function() {
   if(!answerSelected) {
     showMessage("Please select an answer."); // Display message if no answer is selected
     return; // Exit the function if an answer has not been selected
@@ -30,6 +28,24 @@ nextButton.addEventListener("click", () => {
     }
 })
 
+function restartGame() {
+  // Reset all variables and elements to their initial state
+  currentQuestionIndex = 0;
+  score = 0;
+
+  resultsContainer.innerHTML = ""; // Clear the result section
+
+  // Reset the UI and start the game again
+  resetState();
+  hideScore();
+  startButton.classList.remove("hide");
+  nextButton.classList.remove("hide");
+  nextButton.disabled = false;
+  isQuizFinished = false;
+  setNextQuestion();
+}
+
+
 function startGame () {
 startButton.classList.add("hide");
 nextButton.style.display = "block";
@@ -43,9 +59,9 @@ setNextQuestion();
 hideScore();
 }
 
-function showQuestion (question) {
-  questionElement.innerText = question.question;
-  question.answers.forEach(answer => {
+function showQuestion (questions) {
+  questionElement.innerText = questions.question;
+  questions.answers.forEach(answer => {
     const button = document.createElement("button");
     button.innerText = answer.text;
     button.classList.add("btn");
@@ -58,13 +74,10 @@ function showQuestion (question) {
 }
 
 function setNextQuestion () {
- 
   resetState();
   answerSelected = false;
   messageElement.innerText = "";
   showQuestion(shuffleQuestions[currentQuestionIndex])
-  let currentTime = 0 
-
 }
 
 function resetState () {
@@ -75,7 +88,6 @@ function resetState () {
 }
 
 function selectAnswer (e) {
-  
   if (answerSelected) {
     return; // Exit the function if an answer has already been selected
   }
@@ -89,36 +101,15 @@ function selectAnswer (e) {
     button.disabled = true; // Disable all answer buttons
     setStatusClass(button, button.dataset.correct);
   })
-  
-  if (!audioElements.paused) {
-    audioElements.forEach(audio => {
-        audio.pause();
-        audio.currentTime = 0;
-    });
-}
+  userResponses[currentQuestionIndex] = Array.from(answersButtonElement.children).indexOf(selectButton);
+
   if (correct) {
     score++;
     selectButton.style.backgroundColor = "green";
-    trueSound.play()
-  } 
-  else {
+  } else {
     selectButton.style.backgroundColor = "red";
-    falseSound.play()
   }
-
-
     nextButton.classList.remove("hide");
-}
-
-
-
-function showScore () {
-  startButton.innerText = "Restart";
-  startButton.classList.remove("hide");
-  nextButton.classList.add("hide");
-  questionContainerElements.classList.add("hide");
-  scoreElement.innerText = `You scored ${score} out of ${questions.length}`
-  nextButton.disabled = true; // Disable the Next button
 }
 
 function hideScore() {
@@ -143,6 +134,66 @@ function clearStatusClass (element) {
   element.classList.remove("correct");
   element.classList.remove("wrong");
 }
+
+const userResponses = [];
+
+function displayAllQuestions() {
+  const resultsContainer = document.getElementById("results-container");
+  resultsContainer.innerHTML = "";
+
+  const heading = document.createElement("h2");
+  heading.innerText = "Quiz Results:";
+  resultsContainer.appendChild(heading);
+
+  for (let i = 0; i < questions.length; i++) {
+    const question = questions[i];
+    const userAnswerIndex = userResponses[i];
+    const correctAnswerIndex = question.answers.findIndex(answer => answer.correct);
+
+    const questionResult = document.createElement("div");
+    questionResult.classList.add("question-result");
+
+    const questionText = document.createElement("p");
+    questionText.innerText = question.question;
+    questionResult.appendChild(questionText);
+
+    const userAnswer = document.createElement("p");
+    if (userAnswerIndex !== undefined && question.answers[userAnswerIndex]) {
+      userAnswer.innerText = "Your Answer: " + question.answers[userAnswerIndex].text;
+    } else {
+      userAnswer.innerText = "Your Answer: N/A";
+    }
+    questionResult.appendChild(userAnswer);
+
+    const correctAnswer = document.createElement("p");
+    if (correctAnswerIndex !== -1) {
+      correctAnswer.innerText = "Correct Answer: " + question.answers[correctAnswerIndex].text;
+    } else {
+      correctAnswer.innerText = "Correct Answer: N/A";
+    }
+    questionResult.appendChild(correctAnswer);
+
+    resultsContainer.appendChild(questionResult);
+  }
+
+  const restartButton = document.createElement("button");
+  restartButton.innerText = "Restart";
+  restartButton.classList.add("btn");
+  restartButton.addEventListener("click", restartGame);
+  resultsContainer.appendChild(restartButton);
+
+  // Show the restart button after displaying the quiz results
+  restartButton.classList.remove("hide");
+}
+
+
+function showScore () {
+  questionContainerElements.classList.add("hide");
+  scoreElement.innerText = `You scored ${score} out of ${questions.length}`
+  nextButton.disabled = true; // Disable the Next button
+  displayAllQuestions();   
+}
+
 
 const questions = [
     {
